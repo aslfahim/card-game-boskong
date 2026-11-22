@@ -11,7 +11,7 @@
 // the clock, the environment (beyond the output dir), or any mutable state:
 // it copies files and lets buildDossier do the summarizing.
 
-import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-game.ts';
@@ -22,7 +22,9 @@ const outputDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 
 // Start from a clean output directory so a stale file from an earlier run
 // can never leak into the hand-in.
-rmSync(outputDir, { recursive: true, force: true });
+for (const entry of readdirSync(outputDir)) {
+  rmSync(join(outputDir, entry), { recursive: true, force: true });
+}
 mkdirSync(outputDir, { recursive: true });
 
 // The playable game: plain static files under game/.
