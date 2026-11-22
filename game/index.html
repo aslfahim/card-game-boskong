@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tide Market — a merchant trading card game</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div id="table">
+  <header id="topbar">
+    <div class="brand"><span class="brand-anchor">⚓</span> TIDE MARKET</div>
+    <div class="top-mid"><span id="day-label">Day 1 / 8</span><span id="tide-label">☀ Calm Seas</span></div>
+    <div class="top-actions">
+      <button id="btn-help" type="button">? How to play</button>
+      <button id="btn-mute" type="button">🔊 Sound on</button>
+    </div>
+  </header>
+
+  <section id="scoreboard">
+    <div class="purse you">
+      <div class="purse-name">YOU · Merchant</div>
+      <div class="purse-amount" id="purse-you">100 🪙</div>
+      <div class="purse-worth" id="worth-you">net 100</div>
+    </div>
+    <div class="versus">VS</div>
+    <div class="purse rival">
+      <div class="purse-name">CAPT. BRINE · Rival Trader</div>
+      <div class="purse-amount" id="purse-rival">100 🪙</div>
+      <div class="purse-worth" id="worth-rival">net 100</div>
+    </div>
+    <div id="price-board" aria-label="Market prices"></div>
+  </section>
+
+  <section class="zone">
+    <div class="zone-head"><span>⛵ Rival's hand — <span id="rival-count">3 cards</span></span><span id="rival-tell" class="tell"></span></div>
+    <div id="rival-row" class="card-row"></div>
+  </section>
+
+  <section class="zone">
+    <div class="zone-head"><span>🏪 Market — click a card to buy (keys 1–4)</span><span class="hint">Prices move with the tide</span></div>
+    <div id="market-row" class="card-row"></div>
+  </section>
+
+  <section class="zone">
+    <div class="zone-head"><span>🖐️ Your hand — <span id="hand-count">3 / 7 cards</span></span><span id="sell-hint" class="hint"></span></div>
+    <div id="hand-row" class="card-row"></div>
+  </section>
+
+  <footer id="controls">
+    <button id="btn-sell" type="button" disabled>Sell selected (S)</button>
+    <button id="btn-end-day" type="button">End day ⏭ (Enter)</button>
+    <div id="log-wrap">
+      <div class="log-title">Harbor log</div>
+      <ul id="log-list"></ul>
+    </div>
+  </footer>
+</div>
+
+<div id="toast" role="status"></div>
+
+<div id="title-screen" class="overlay">
+  <div class="panel title-panel">
+    <div class="title-anchor">⚓</div>
+    <h1>TIDE MARKET</h1>
+    <p class="tagline">Buy low. Sell high. Out-trade Capt. Brine before the 8th sunset.</p>
+    <div class="title-cards">
+      <div class="card good-spice" style="--good:#e5484d;--good-dark:#8f1d21"><div class="card-top"><span class="card-glyph">◆</span><span class="card-value">9</span></div><div class="card-shape shape-diamond">◆</div><div class="card-name">Ember Spice</div><div class="card-tag">Buy low</div></div>
+      <div class="card good-silk" style="--good:#8b5cf6;--good-dark:#4c1d95"><div class="card-top"><span class="card-glyph">●</span><span class="card-value">7</span></div><div class="card-shape shape-circle">●</div><div class="card-name">Moon Silk</div><div class="card-tag">Sell high</div></div>
+      <div class="card good-tea" style="--good:#2f9e44;--good-dark:#14532d"><div class="card-top"><span class="card-glyph">▲</span><span class="card-value">8</span></div><div class="card-shape shape-triangle">▲</div><div class="card-name">Jade Tea</div><div class="card-tag">Set ×1.5</div></div>
+      <div class="card good-pearl" style="--good:#1971c2;--good-dark:#0b3d66"><div class="card-top"><span class="card-glyph">■</span><span class="card-value">10</span></div><div class="card-shape shape-square">■</div><div class="card-name">Tide Pearl</div><div class="card-tag">Win the harbor</div></div>
+    </div>
+    <button id="btn-start" type="button" class="big-btn">⛵ Start trading</button>
+    <p class="keys-line">Mouse or keys 1–4 buy · click a hand card to sell · Enter ends the day · 8 days, richest trader wins</p>
+  </div>
+</div>
+
+<div id="help-screen" class="overlay hidden">
+  <div class="panel help-panel">
+    <h2>How to play Tide Market</h2>
+    <ul>
+      <li>🏪 <b>Buy</b> goods from the market row — click a card (or press 1–4). You pay its price in coins.</li>
+      <li>📈 <b>Prices move with the tide.</b> Each morning a tide event shifts every good's multiplier. Buy when a good is cheap, sell when it is dear.</li>
+      <li>🖐️ <b>Sell</b> cards from your hand — click to select, click again (or press S) to sell at the day's price.</li>
+      <li>◆●▲■ <b>Sets pay:</b> hold 3+ cards of one good and every sale of that good pays ×1.5.</li>
+      <li>⛵ <b>Brine trades too.</b> Watch the harbor log: he buys cheap and sells dear. Beat him to the bargains.</li>
+      <li>🏆 After <b>8 days</b> the richer trader — purse plus hand value — rules the harbor.</li>
+    </ul>
+    <button id="btn-close-help" type="button" class="big-btn">Got it — back to the table</button>
+  </div>
+</div>
+
+<div id="win-screen" class="overlay hidden">
+  <div id="confetti"></div>
+  <div class="panel end-panel win">
+    <h2 id="end-title">🏆 You Rule the Harbor!</h2>
+    <p id="end-tally" class="tally"></p>
+    <p id="end-detail" class="detail"></p>
+    <p class="flourish">The harbor bells ring your name, merchant. Brine tips his cap and pays up.</p>
+    <button id="btn-again" type="button" class="big-btn">Trade again (N)</button>
+  </div>
+</div>
+
+<div id="loss-screen" class="overlay hidden">
+  <div class="panel end-panel loss">
+    <h2 id="end-title-loss">🌊 Brine Takes the Harbor</h2>
+    <p id="end-tally-loss" class="tally"></p>
+    <p id="end-detail-loss" class="detail"></p>
+    <p class="flourish">The tide turned against you this time. Study the price board, watch Brine's hoards — and take the harbor back.</p>
+    <button id="btn-again-loss" type="button" class="big-btn">Trade again (N)</button>
+  </div>
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
